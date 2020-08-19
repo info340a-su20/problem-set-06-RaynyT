@@ -19,7 +19,6 @@ const EXAMPLE_SEARCH_RESULTS = {results:[{
     artworkUrl100: "http://is1.mzstatic.com/image/thumb/Music20/v4/23/c1/9e/23c19e53-783f-ae47-7212-03cc9998bd84/source/100x100bb.jpg",
 }]};
 
-
 //For practice, define a function `renderTrack()` that takes as an argument an
 //Object representing a SINGLE song track (like an element of the above array) 
 //and adds a new DOM element to the `#records` div representing that track. The 
@@ -33,8 +32,14 @@ const EXAMPLE_SEARCH_RESULTS = {results:[{
 //
 //You can test this function by passing it one of the above array items
 //(e.g., `EXAMPLE_SEARCH_RESULTS.results[0]).
-
-
+function renderTrack(single) {
+  let track = document.querySelector("#records");
+  let imgElem = document.createElement("img");
+  imgElem.src = single.artworkUrl100;
+  imgElem.alt = single.trackName;
+  imgElem.title = single.trackName;
+  track.appendChild(imgElem);
+}
 
 //Define a function `renderSearchResults()` that takes in an object with a
 //`results` property containing an array of music tracks; the same format as
@@ -44,14 +49,21 @@ const EXAMPLE_SEARCH_RESULTS = {results:[{
 //"clear" the previously displayed results first!
 //
 //You can test this function by passing it the `EXAMPLE_SEARCH_RESULTS` object.
-
-
+function renderSearchResults(track) {
+  if (track.resultCount == 0) {
+    renderError(new Error("No results found"));
+  }
+  document.querySelector("#records").innerHTML = "";
+  track.results.forEach(element => 
+    renderTrack(element)
+  );
+}
 
 //Now it's the time to practice using `fetch()`! First, modify the `index.html`
 //file to load the polyfills for _BOTH_ the fetch() function and Promises, so
 //that your example will work on Internet Explorer.
 //Use version 2.0.4 of the `fetch` polyfill.
-
+// --- In html file. ---
 
 //Define a function `fetchTrackList()` that takes in a "search term" string as a
 //parameter and uses the `fetch()` function to downloads a list of tracks from 
@@ -68,23 +80,48 @@ const EXAMPLE_SEARCH_RESULTS = {results:[{
 //You can test this function by calling the method and passing it the name of 
 //your favorite band (you CANNOT test it with the search button yet!)
 const URL_TEMPLATE = "https://itunes.apple.com/search?entity=song&limit=25&term={searchTerm}";
-
-
-
+function fetchTrackList(searchTerm) {
+  let tracks = fetch(URL_TEMPLATE.replace("{searchTerm}", searchTerm))
+    .then(response => response.json())
+    .then(data => {
+      renderSearchResults(data);
+      //togglerSpinner();
+    })
+    .catch(error => renderError(error));
+    //.then(togglerSpinner());
+  return tracks;
+}
 
 //Add an event listener to the "search" button so that when it is clicked (and 
 //the the form is submitted) your `fetchTrackList()` function is called with the
 //user-entered `#searchQuery` value. Use the `preventDefault()` function to keep
 //the form from being submitted as usual (and navigating to a different page).
-
+let buttonElem = document.getElementsByClassName("btn-primary");
+buttonElem[0].addEventListener('click', function(event) {
+  fetchTrackList(document.querySelector("#searchQuery").value);
+  event.preventDefault();
+});
 
 
 //Next, add some error handling to the page. Define a function `renderError()`
 //that takes in an "Error object" and displays that object's `message` property
 //on the page. Display this by creating a `<p class="alert alert-danger">` and
 //placing that alert inside the `#records` element.
-
-
+function renderError(errorObj) {
+  var records = document.getElementById("records");
+  console.log(records);
+  var alert = document.createElement("p");
+  alert.classList.add("alert", "alert-danger");
+  alert.text = errorObj.message;
+  alert.textContent = errorObj.message;
+  console.log(alert);
+  console.log(alert.length);
+  console.log(alert.classList);
+  console.log(alert.text);
+  records.appendChild(alert);
+  records.innerHTML = alert.text;
+  console.log(records);
+}
 
 //Add the error handing to your program in two ways:
 //(1) Add a `.catch()` callback to the AJAX call in `fetchTrackList()` that
@@ -94,7 +131,7 @@ const URL_TEMPLATE = "https://itunes.apple.com/search?entity=song&limit=25&term=
 //    it an new Error object: `new Error("No results found")`
 //
 //You can test this error handling by trying to search with an empty query.
-
+// --- Done above ---
 
 //Finally, add a "loading spinner" as user feedback in case the download takes a
 //long time (so the page doesn't seem unresponsive). To do this, define a 
@@ -107,7 +144,13 @@ const URL_TEMPLATE = "https://itunes.apple.com/search?entity=song&limit=25&term=
 //spinner (show it) BEFORE you send the AJAX request, and toggle it back off
 //after the ENTIRE request is completed (including after any error catching---
 //download the data and `catch()` the error, and `then()` show the spinner.
-
+/*
+function togglerSpinner() {
+  let spinner = document.getElementsByTagName("h1");
+  spinner.find('i').toggleClass('d-none');
+});
+}
+*/
 
 
 
