@@ -109,18 +109,11 @@ buttonElem[0].addEventListener('click', function(event) {
 //placing that alert inside the `#records` element.
 function renderError(errorObj) {
   var records = document.getElementById("records");
-  console.log(records);
   var alert = document.createElement("p");
   alert.classList.add("alert", "alert-danger");
-  alert.text = errorObj.message;
-  alert.textContent = errorObj.message;
-  console.log(alert);
-  console.log(alert.length);
-  console.log(alert.classList);
-  console.log(alert.text);
+  //alert.text = errorObj.message;
+  alert.innerHTML = errorObj.message;
   records.appendChild(alert);
-  records.innerHTML = alert.text;
-  console.log(records);
 }
 
 //Add the error handing to your program in two ways:
@@ -148,7 +141,6 @@ function renderError(errorObj) {
 function togglerSpinner() {
   let spinner = document.getElementsByTagName("h1");
   spinner.find('i').toggleClass('d-none');
-});
 }
 */
 
