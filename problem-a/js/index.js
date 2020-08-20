@@ -81,14 +81,14 @@ function renderSearchResults(track) {
 //your favorite band (you CANNOT test it with the search button yet!)
 const URL_TEMPLATE = "https://itunes.apple.com/search?entity=song&limit=25&term={searchTerm}";
 function fetchTrackList(searchTerm) {
-  //togglerSpinner();
+  togglerSpinner();
   let tracks = fetch(URL_TEMPLATE.replace("{searchTerm}", searchTerm))
     .then(response => response.json())
     .then(data => {
       renderSearchResults(data);
     })
-    .catch(error => renderError(error));
-    //.then(function() {togglerSpinner()});
+    .catch(error => renderError(error))
+    .then(function() {togglerSpinner()});
   return tracks;
 }
 
@@ -138,7 +138,7 @@ function renderError(errorObj) {
 //download the data and `catch()` the error, and `then()` show the spinner.
 
 function togglerSpinner() {
-  var spinner = document.getElementsByClassName('fa-spinner');
+  var spinner = document.querySelector('.fa-spinner');
   //if (spinner.hidden) {
   //  spinner.hidden = false;
   //} else {
