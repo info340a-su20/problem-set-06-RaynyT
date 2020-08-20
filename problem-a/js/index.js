@@ -50,10 +50,10 @@ function renderTrack(single) {
 //
 //You can test this function by passing it the `EXAMPLE_SEARCH_RESULTS` object.
 function renderSearchResults(track) {
-  if (track.resultCount == 0) {
+  document.querySelector("#records").innerHTML = "";
+  if (track.results.length == 0) {
     renderError(new Error("No results found"));
   }
-  document.querySelector("#records").innerHTML = "";
   track.results.forEach(element => 
     renderTrack(element)
   );
@@ -81,14 +81,14 @@ function renderSearchResults(track) {
 //your favorite band (you CANNOT test it with the search button yet!)
 const URL_TEMPLATE = "https://itunes.apple.com/search?entity=song&limit=25&term={searchTerm}";
 function fetchTrackList(searchTerm) {
+  //togglerSpinner();
   let tracks = fetch(URL_TEMPLATE.replace("{searchTerm}", searchTerm))
     .then(response => response.json())
     .then(data => {
       renderSearchResults(data);
-      //togglerSpinner();
     })
     .catch(error => renderError(error));
-    //.then(togglerSpinner());
+    //.then(function() {togglerSpinner()});
   return tracks;
 }
 
@@ -111,7 +111,6 @@ function renderError(errorObj) {
   var records = document.getElementById("records");
   var alert = document.createElement("p");
   alert.classList.add("alert", "alert-danger");
-  //alert.text = errorObj.message;
   alert.innerHTML = errorObj.message;
   records.appendChild(alert);
 }
@@ -137,13 +136,16 @@ function renderError(errorObj) {
 //spinner (show it) BEFORE you send the AJAX request, and toggle it back off
 //after the ENTIRE request is completed (including after any error catching---
 //download the data and `catch()` the error, and `then()` show the spinner.
-/*
-function togglerSpinner() {
-  let spinner = document.getElementsByTagName("h1");
-  spinner.find('i').toggleClass('d-none');
-}
-*/
 
+function togglerSpinner() {
+  var spinner = document.getElementsByClassName('fa-spinner');
+  //if (spinner.hidden) {
+  //  spinner.hidden = false;
+  //} else {
+  //  spinner.hidden = true;
+  //}
+  spinner.classList.toggle("d-none");
+}
 
 
 //Optional extra: add the ability to "play" each track listing by clicking
